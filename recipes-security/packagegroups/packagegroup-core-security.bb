@@ -4,15 +4,21 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/LICENSE;md5=4d92cd373abda3937c2bc47fbc49d
                     file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 PR = "r0"
 
+inherit packagegroup
+
 PACKAGES = "\
-    ${PN} \
+    packagegroup-security-scanners \
+    packagegroup-security-utils \
     "
 
 ALLOW_EMPTY_${PN} = "1"
 
-RDEPENDS_${PN} = " \
-    libseccomp \
+RDEPENDS_packagegroup-security-scanners = " \
     nikto \
-    checksecurity \
     nmap \
 	"
+RDEPENDS_packagegroup-security-utils = " \
+    pax-utils \
+    libseccomp \
+    pinentry \
+    "
