@@ -1,8 +1,11 @@
-DESCRIPTION = "Image with Security utility support" 
+DESCRIPTION = "Image with Security utilities support" 
+LICENSE = "MIT"
 
 IMAGE_FEATURES += "splash ssh-server-openssh"
 
-LICENSE = "MIT"
+#EXTRA_IMAGE_FEATURES += "debug-tweaks dbg-pkgs dev-pkgs staticdev-pkgs"
+
+IMAGE_LINGUAS = " "
 
 IMAGE_INSTALL = "\
 	${CORE_IMAGE_BASE_INSTALL} \
@@ -12,3 +15,4 @@ IMAGE_INSTALL = "\
 "   
 
 inherit core-image
+
