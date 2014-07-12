@@ -10,10 +10,7 @@ IMAGE_INSTALL = "\
 	util-linux-agetty \
 	packagegroup-core-full-cmdline \
 	packagegroup-core-security \
-"   
+    "   
 
-inherit core-image distro_features_check
-
-DISTRO_FEATURES = "pax"
-
+inherit core-image
 
