@@ -12,8 +12,5 @@ IMAGE_INSTALL = "\
 	packagegroup-core-security \
 "   
 
-inherit core-image distro_features_check
-
-DISTRO_FEATURES = "pax"
-
+inherit core-image
 
