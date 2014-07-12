@@ -28,6 +28,7 @@ SUMMARY_packagegroup-security-scanners = "Security scanners"
 RDEPENDS_packagegroup-security-scanners = "\
     nikto \
     checksecurity \
+    ${@bb.utils.contains("DISTRO_FEATURES", "tomoyo", "ccs-tools", "",d)} \
 	"
 
 SUMMARY_packagegroup-security-audit = "Security Audit tools "
