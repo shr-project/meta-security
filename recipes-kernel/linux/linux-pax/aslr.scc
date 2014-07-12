@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Randomize the address of the kernel image"
+define KFEATURE_COMPATIBILITY board
+
+kconf non-hardware aslr.cfg
