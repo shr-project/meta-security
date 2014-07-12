@@ -28,10 +28,7 @@ FILES_${PN} = "\
     /usr/sbin/* \
     /sbin/* \
     ${libdir}/* \
-<<<<<<< HEAD
     /usr/share/man/man8/* \
-=======
->>>>>>> 8fde7476ed55d7f4371835e337afbb659fb73ffc
 "
 
 FILES_${PN}-dbg = "\
