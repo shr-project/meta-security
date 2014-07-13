@@ -1,0 +1,58 @@
+Index: samhain-2.7.2c/configure.ac
+===================================================================
+--- samhain-2.7.2c.orig/configure.ac
++++ samhain-2.7.2c/configure.ac
+@@ -1180,7 +1180,7 @@ AC_ARG_WITH(database,
+ 		fi
+ 
+ 		AC_MSG_RESULT(yes)
+-		LIBS="$LIBS -L${MYSQL_LIB_DIR} -lmysqlclient"
++                LIBS="$LIBS -lmysqlclient"
+ 		# CFLAGS="$CFLAGS -I${MYSQL_INC_DIR}"
+ 		CPPFLAGS="$CPPFLAGS -I${MYSQL_INC_DIR}"
+ 	  fi  
+@@ -1301,11 +1301,11 @@ AC_ARG_WITH(database,
+ 
+             AC_MSG_RESULT(yes)
+ 
+-	    LIBS="$LIBS -L${PGSQL_LIB_DIR} -lpq -lm"
++            LIBS="$LIBS -lpq -lm"
+ 	    if test x"$enable_static" = xyes; then
+-	      LIBS="$LIBS -L${PGSQL_LIB_DIR} -lpq -lcrypt -lm"
++             LIBS="$LIBS -lpq -lcrypt -lm"
+ 	    else
+-	      LIBS="$LIBS -L${PGSQL_LIB_DIR} -lpq -lm"
++             LIBS="$LIBS -lpq -lm"
+ 	    fi
+ 	    # CFLAGS="$CFLAGS -I${PGSQL_INC_DIR}"
+ 	    CPPFLAGS="$CPPFLAGS -I${PGSQL_INC_DIR}"
+@@ -1314,9 +1314,9 @@ AC_ARG_WITH(database,
+ 	  else
+ 	    pg_lib_dir=`${PGCONF} --libdir`
+ 	    if test x"$enable_static" = xyes; then
+-	      LIBS="$LIBS -L${pg_lib_dir} -lpq -lcrypt -lm"
++             LIBS="$LIBS -lpq -lcrypt -lm"
+             else
+-	      LIBS="$LIBS -L${pg_lib_dir} -lpq -lm"
++             LIBS="$LIBS -lpq -lm"
+             fi
+ 	    pg_inc_dir=`${PGCONF} --includedir`
+ 	    # CFLAGS="$CFLAGS -I${pg_inc_dir}"
+@@ -1359,7 +1359,7 @@ AC_ARG_WITH(database,
+ 
+           AC_MSG_RESULT(yes)
+           CPPFLAGS="${CPPFLAGS} -I${ODBC_INC_DIR}"
+-          LIBS="${LIBS} -L${ODBC_LIB_DIR} -l$ODBC_LIB"
++          LIBS="${LIBS} -l$ODBC_LIB"
+           AC_DEFINE(WITH_ODBC)
+           AC_DEFINE(WITH_DATABASE)
+ 
+@@ -1393,7 +1393,7 @@ AC_ARG_WITH(database,
+             elif test -r $ORACLE_LIB_DIR/libwtc8.so; then
+               ORACLE_LIBS="${ORACLE_LIBS} -lwtc8"
+             fi
+-            LIBS="${LIBS} -L${ORACLE_LIB_DIR} ${ORACLE_LIBS}"
++            LIBS="${LIBS} ${ORACLE_LIBS}"
+ 	    if test "x$GCC" != "xyes"; then
+ 	      CFLAGS="${CFLAGS} -fno-strict-aliasing"
+ 	    fi

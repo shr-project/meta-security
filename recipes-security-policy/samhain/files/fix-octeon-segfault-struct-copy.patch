@@ -1,0 +1,24 @@
+diff -ruNp samhain-2.7.2c-orginal/src/sh_error.c samhain-2.7.2c/src/sh_error.c
+--- samhain-2.7.2c-orginal/src/sh_error.c	2010-05-04 14:12:26.000000000 +0530
++++ samhain-2.7.2c/src/sh_error.c	2011-01-24 19:10:05.930991525 +0530
+@@ -1510,7 +1510,7 @@ int sh_error_ehead (/*@null@*/const char
+ #if !defined(VA_COPY)
+ #if defined(__GNUC__) && defined(__PPC__) && (defined(_CALL_SYSV) || defined(_WIN32))
+ #define VA_COPY(ap1, ap2)     (*(ap1) = *(ap2))
+-#elif defined(VA_COPY_AS_ARRAY)
++#elif defined(VA_COPY_AS_ARRAY) && !defined(__mips__)
+ #define VA_COPY(ap1, ap2)     memmove ((ap1), (ap2), sizeof (va_list))
+ #else /* va_list is a pointer */
+ #define VA_COPY(ap1, ap2)     ((ap1) = (ap2))
+diff -ruNp samhain-2.7.2c-orginal/src/slib.c samhain-2.7.2c/src/slib.c
+--- samhain-2.7.2c-orginal/src/slib.c	2010-06-26 13:26:55.000000000 +0530
++++ samhain-2.7.2c/src/slib.c	2011-01-24 19:08:58.893991586 +0530
+@@ -589,7 +589,7 @@ void *sl_memset(void *s, int c, size_t n
+ #if !defined (VA_COPY)
+ #if defined (__GNUC__) && defined (__PPC__) && (defined (_CALL_SYSV) || defined (_WIN32))
+ #define VA_COPY(ap1, ap2)     (*(ap1) = *(ap2))
+-#elif defined (VA_COPY_AS_ARRAY)
++#elif defined (VA_COPY_AS_ARRAY) && !defined(__mips__)
+ #define VA_COPY(ap1, ap2)     memmove ((ap1), (ap2), sizeof (va_list))
+ #else /* va_list is a pointer */
+ #define VA_COPY(ap1, ap2)     ((ap1) = (ap2))

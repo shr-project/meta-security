@@ -1,0 +1,16 @@
+/var/run can be a symlink, especially when using tmpfs to hold it.  So
+don't lstat it, just stat it.
+
+Index: samhain-2.7.2c/src/sh_unix.c
+===================================================================
+--- samhain-2.7.2c.orig/src/sh_unix.c	2010-09-14 22:11:35.000000000 -0400
++++ samhain-2.7.2c/src/sh_unix.c	2011-06-15 17:43:23.961492795 -0400
+@@ -4267,7 +4267,7 @@
+ 
+   pid_dir = sh_util_dirname (pidpath);
+ 
+-  status = retry_lstat (FIL__, __LINE__, pid_dir, &buf);
++  status = retry_stat (FIL__, __LINE__, pid_dir, &buf);
+ 
+   if (status < 0 && errno == ENOENT)
+     {

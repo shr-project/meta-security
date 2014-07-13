@@ -1,0 +1,183 @@
+Index: samhain-2.7.2c/Makefile.in
+===================================================================
+--- samhain-2.7.2c.orig/Makefile.in
++++ samhain-2.7.2c/Makefile.in
+@@ -53,7 +53,7 @@ selectconfig = @selectconfig@
+ top_builddir = .
+ 
+ INSTALL = @INSTALL@
+-INSTALL_PROGRAM = @INSTALL@ -s -m 700
++INSTALL_PROGRAM = @INSTALL@ -m 700
+ INSTALL_SHELL = @INSTALL@ -m 700
+ INSTALL_DATA = @INSTALL@ -m 600
+ INSTALL_MAN = @INSTALL@ -m 644
+@@ -210,6 +210,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_NEEDED
+ 
+ PROGRAMS = $(SETPWD) $(STEGIN) $(SAMHAIN) $(YULECTL)
+ 
++AUTOHEADER=autoheader
++
+ #----------------------------------------------------------
+ #
+ # the first target is the default one
+@@ -234,7 +236,7 @@ $(top_srcdir)/config.h.in: $(top_srcdir)
+ 	touch $(top_srcdir)/config.h.in
+ 
+ $(top_srcdir)/stamp-h.in: $(top_srcdir)/configure.ac $(top_srcdir)/aclocal.m4
+-	cd $(top_srcdir) && autoheader
++	cd $(top_srcdir) && $(AUTOHEADER)
+ 	echo timestamp > $(top_srcdir)/stamp-h.in
+ 
+ config.h: stamp-h
+@@ -531,8 +533,6 @@ install-program: $(PROGRAMS) sstrip
+ 	    echo " $(INSTALL_PROGRAM) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's%samhain%@install_name@%'|sed 's%yule%@install_name@%'`"; \
+ 	    $(INSTALL_PROGRAM) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's%samhain%@install_name@%'|sed 's%yule%@install_name@%'`; \
+ 	    chmod 0700 $(DESTDIR)$(sbindir)/`echo $$p|sed 's%samhain%@install_name@%'|sed 's%yule%@install_name@%'`; \
+-	    echo " ./sstrip $(DESTDIR)$(sbindir)/`echo $$p|sed 's%samhain%@install_name@%'|sed 's%yule%@install_name@%'`"; \
+-	    ./sstrip $(DESTDIR)$(sbindir)/`echo $$p|sed 's%samhain%@install_name@%'|sed 's%yule%@install_name@%'`; \
+ 	  else :; fi; \
+ 	done
+ 
+@@ -1263,7 +1263,7 @@ lkm: @sh_lkm@
+ # For kernel syscall monitoring
+ kern_head: Makefile $(top_srcdir)/include/kern_head.h $(srcsrc)/kern_head.c
+ 	@echo "$(BUILD_CC) -I. -I./include -DSYSTEMMAP=\"@systemmap@\" -o kern_head $(srcsrc)/kern_head.c $(LIBS_KVM)"; \
+-	$(BUILD_CC) -I. -I./include -DSYSTEMMAP=\"@systemmap@\" -o kern_head $(srcsrc)/kern_head.c $(LIBS_KVM)
++       $(BUILD_CC) -I. -I$(top_srcdir)/include -DSYSTEMMAP=\"@systemmap@\" -o kern_head $(srcsrc)/kern_head.c $(LIBS_KVM)
+ 
+ sh_ks.h: kern_head
+ 	@sleep 1; \
+@@ -1317,8 +1317,6 @@ exepack.data: $(SAMHAIN) exepack_mkdata 
+ 	cp ./$(SAMHAIN) ./samhain.pk.data; \
+ 	echo "strip ./samhain.pk.data"; \
+ 	strip ./samhain.pk.data > /dev/null 2>&1  || echo "... is already stripped"; \
+-	echo "./sstrip ./samhain.pk.data"; \
+-	./sstrip ./samhain.pk.data > /dev/null 2>&1  || echo "sstrip returned false"; \
+ 	echo "./exepack_mkdata ./samhain.pk.data ./exepack.data 0"; \
+ 	./exepack_mkdata ./samhain.pk.data ./exepack.data 0; \
+ 	echo "rm -f ./samhain.pk.data"; \
+@@ -1344,15 +1342,11 @@ samhain.pk: $(SAMHAIN) exepack exepack_f
+ 	cp ./$(SAMHAIN) ./samhain.pk.data; \
+ 	echo "strip ./samhain.pk.data"; \
+ 	strip ./samhain.pk.data > /dev/null 2>&1  || echo "... is already stripped"; \
+-	echo "./sstrip ./samhain.pk.data"; \
+-	./sstrip ./samhain.pk.data > /dev/null 2>&1  || echo "sstrip returned false"; \
+ 	test -f exepack.out && rm exepack.out; \
+ 	echo "./exepack_fill exepack samhain.pk.data exepack.out"; \
+ 	./exepack_fill exepack samhain.pk.data exepack.out; \
+ 	chmod +x exepack.out; \
+ 	echo "strip exepack.out"; \
+-	strip exepack.out > /dev/null 2>&1 || echo "... is already stripped"; \
+-	./sstrip exepack.out > /dev/null 2>&1 || echo "sstrip returned false"; \
+ 	echo "mv exepack.out samhain.pk"; \
+ 	rm -f samhain.pk; mv exepack.out samhain.pk
+ 
+Index: samhain-2.7.2c/configure.ac
+===================================================================
+--- samhain-2.7.2c.orig/configure.ac
++++ samhain-2.7.2c/configure.ac
+@@ -666,8 +666,16 @@ dnl ************************************
+ dnl
+ dnl check for /proc filesystem
+ dnl
+-if test -d "/proc/$$"
+-then
++AC_MSG_CHECKING(for proc fs)
++AC_CACHE_VAL(sh_ac_have_procfs,
++       if test -d "/proc/$$"
++       then
++               sh_ac_have_procfs=yes
++       else
++               sh_ac_have_procfs=no
++       fi)
++AC_MSG_RESULT($sh_ac_have_procfs)
++if test $sh_ac_have_procfs = yes; then
+         AC_DEFINE([HAVE_PROCFS],[1],[Define if you have a proc fs])
+ fi
+ 
+@@ -687,54 +695,43 @@ fi
+ AC_CHECK_HEADERS(gmp.h)
+ 
+ AC_MSG_CHECKING([for ps])
+-PS=
+-for ff in /usr/ucb /bin /usr/bin; do
+-    if test -x "$ff/ps"; then
+-       PS="$ff/ps"
+-       AC_MSG_RESULT([$PS])
+-       break
+-    fi
+-done
+-if test x$PS = x
++AC_CACHE_VAL(samhain_cv_ps_location,
++       samhain_cv_ps_location=
++       for ff in /usr/ucb /bin /usr/bin; do
++           if test -x "$ff/ps"; then
++                  samhain_cv_ps_location="$ff/ps"
++                  break
++           fi
++       done)
++if test "x$samhain_cv_ps_location" = x
+ then
+ 	AC_MSG_RESULT([no])
+ 	AC_MSG_ERROR([Cannot find ps in any of /usr/ucb /bin /usr/bin])
+ fi
++AC_MSG_RESULT([$samhain_cv_ps_location])
++PS="$samhain_cv_ps_location"
+ AC_DEFINE_UNQUOTED([PSPATH], _("$PS"), [Path to ps])
+ 
+-AC_MSG_CHECKING([how to use ps])
+-$PS ax >/dev/null 2>&1
+-if test $? -eq 0; then
+-   case "$host_os" in
+-   *openbsd*)
+-   one=`$PS akx | wc -l`
+-   ;;
+-   *)
+-   one=`$PS ax | wc -l`
+-   ;;
+-   esac
+-else
+-   one=0
+-fi
+-$PS -e >/dev/null 2>&1
+-if test $? -eq 0; then
+-   two=`$PS -e | wc -l`
+-else
+-   two=0
+-fi
+-if test $one -ge $two 
+-then
+-   case "$host_os" in
+-   *openbsd*)
+-	PSARG="akx"
+-	;;
+-   *)
+-	PSARG="ax"
+-	;;
+-   esac
+-else
+-	PSARG="-e"
+-fi
++AC_CACHE_VAL(samhain_cv_ps_args,
++       $PS ax >/dev/null 2>&1
++       if test $? -eq 0; then
++          one=`$PS ax | wc -l`
++       else
++          one=0
++       fi
++       $PS -e >/dev/null 2>&1
++       if test $? -eq 0; then
++          two=`$PS -e | wc -l`
++       else
++          two=0
++       fi
++       if test $one -ge $two
++       then
++           samhain_cv_ps_args="ax"
++       else
++           samhain_cv_ps_args="-e"
++       fi)
++PSARG="$samhain_cv_ps_args"
+ AC_DEFINE_UNQUOTED([PSARG], _("$PSARG"), [Argument for ps])
+ AC_MSG_RESULT([$PS $PSARG])
+ 
