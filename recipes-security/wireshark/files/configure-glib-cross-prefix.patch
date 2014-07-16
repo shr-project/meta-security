@@ -1,0 +1,17 @@
+diff -Naurp a/aclocal-flags b/aclocal-flags
+--- a/aclocal-flags	2013-01-11 16:38:39.106140385 +0530
++++ b/aclocal-flags	2013-01-11 16:38:58.270141131 +0530
+@@ -75,10 +75,12 @@ else
+ 	fi
+ fi
+ 
++# Get the native sysroot or STAGING_DIR_NATIVE directory
++glib_sysroot_native_prefix=`expr "$pkg_config_path" : '\(.*\)/usr/bin/pkg-config'`
+ #
+ # Now see where glib is installed.
+ #
+-glib_prefix=`pkg-config --variable=prefix glib-2.0 2>/dev/null`
++glib_prefix=${glib_sysroot_native_prefix}`pkg-config --variable=prefix glib-2.0 2>/dev/null`
+ 
+ #
+ # Now get the path of its aclocal directory.
