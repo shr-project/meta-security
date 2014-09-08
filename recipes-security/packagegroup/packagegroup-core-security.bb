@@ -54,5 +54,5 @@ RDEPENDS_packagegroup-security-ids = " \
 
 SUMMARY_packagegroup-security-mac = "Security Mandatory Access Control systems"
 RDEPENDS_packagegroup-security-mac = " \
-    ccs-tools \
+    ${@bb.utils.contains("DISTRO_FEATURES", "tomoyo", "ccs-tools", "",d)} \
     "
