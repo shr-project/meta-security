@@ -29,6 +29,7 @@ tests-install:
 EOF
 ) >> tests/Makefile.am
 }
+
 do_compile_append() {
     oe_runmake -C tests tests-build
 }
