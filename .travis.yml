@@ -34,9 +34,9 @@ before_script:
   # Create and initialize the build environment
   # -------------------------------------------
   - rm -rf /tmp/build_env
-  - git clone git://git.openembedded.org/openembedded-core --branch=master --depth=1 /tmp/build_env
-  - git clone git://github.com/openembedded/bitbake --branch=master --depth=1 /tmp/build_env/bitbake
-  - git clone git://git.openembedded.org/meta-openembedded --branch=master --depth=1 /tmp/build_env
+  - git clone git://git.openembedded.org/openembedded-core --branch=master --depth=1 /tmp/build_env/core
+  - git clone git://github.com/openembedded/bitbake --branch=master --depth=1 /tmp/build_env/core/bitbake
+  - git clone git://git.openembedded.org/meta-openembedded --branch=master --depth=1 /tmp/build_env/meta-openembedeed
  # - git clone $(pwd) /tmp/build_env/$(basename $(pwd))
 
 script:
