@@ -40,5 +40,5 @@ before_script:
  # - git clone $(pwd) /tmp/build_env/$(basename $(pwd))
 
 script:
-  - PATH="/usr/sbin:/usr/bin:/sbin:/bin" . /tmp/build_env/oe-init-build-env && echo "BBLAYERS +=\"/tmp/build_env/meta-openembedded/meta-oe\"" >> $(pwd)/conf/bblayers.conf && echo "DISTRO_FEATURES_append = \" opengl \"" >> $(pwd)/conf/local.conf && TCLIBC=glibc MACHINE=qemux86 bitbake core-image-minimal | tee -a world.log
+  - PATH="/usr/sbin:/usr/bin:/sbin:/bin" . /tmp/build_env/core/oe-init-build-env && echo "BBLAYERS +=\"/tmp/build_env/meta-openembedded/meta-oe\"" >> $(pwd)/conf/bblayers.conf && echo "DISTRO_FEATURES_append = \" opengl \"" >> $(pwd)/conf/local.conf && TCLIBC=glibc MACHINE=qemux86 bitbake core-image-minimal | tee -a world.log
 
