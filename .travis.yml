@@ -2,6 +2,7 @@ git:
   depth: 150
 
 sudo: required
+dist: stretch
 
 branches:
   only:
@@ -26,6 +27,7 @@ before_script:
   - sudo apt-get install -qq socat
   - sudo apt-get install -qq libsdl1.2-dev
   - sudo apt-get install -qq xterm
+  - sudo apt-get install -qq python-git
 
   # Install git
   # -----------
