@@ -1,6 +1,8 @@
 git:
   depth: 150
 
+sudo: required
+
 branches:
   only:
     - master
