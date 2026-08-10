@@ -7,6 +7,7 @@ DEPENDS = "bison-native libpcre2"
 
 SRC_URI = "https://github.com/aide/aide/releases/download/v${PV}/${BPN}-${PV}.tar.gz \
            file://0001-Fixes-build-issues.patch \
+           file://0002-Support-build-with-nettle-4.patch \
            file://aide.conf \
 "
 
